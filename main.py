@@ -265,8 +265,9 @@ if __name__ == "__main__":
          lcd.putstr( timezone[dst_flag] )
 
          lcd.move_to( 0, 1 )
-         lcd.putstr( " {:>02d}/{:>02d}/{:>02d} ".format(year, month, dayofmonth) )
          lcd.putstr( daysofweek[dayofweek] )
+         lcd.putstr( " {:>02d} {:>03s} {:>04d} ".format(dayofmonth, months[month], year) )
+
          init_display = False
       else:
          # update display seconds only
