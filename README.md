@@ -11,12 +11,9 @@
 Download HD44780 LCD I2C driver lcd_api.py & pico_i2c_lcd.py from
 https://github.com/T-622/RPI-PICO-I2C-LCD
 
-Use apps generate-bst-times.py to create bsttimes.py
-    'python3 apps/generate-bst-times.py > bsttimes.py'
-
 Enter Wi-Fi SSID & Passphrase details into wifissid.py
 
-Upload lcd_api.py, pico_i2c_lcd.py & main.py, bsttimes.py, wifissid.py to RPi PICO-W
+Upload lcd_api.py, pico_i2c_lcd.py & main.py, wifissid.py to RPi PICO-W
 
 LCD I2C connects to PICO GPIO0 (SDA) and GPIO1 (SCK)
 

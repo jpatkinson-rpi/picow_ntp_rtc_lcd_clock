@@ -22,15 +22,12 @@ from machine import RTC
 
 from wifissid import get_wifi_ssid, get_wifi_passphrase
 
-from bsttimes import bst_start_times, bst_end_times
-from bsttimes import bst_start_dates, bst_end_dates
-from bsttimes import BST_START_YEAR, BST_NUM_YEARS
-
 import utime as time
 import usocket as socket
 import ustruct as struct
 
-DEBUG = False
+DEBUG_TIME = False
+DEBUG_DST = False
 
 LCD_I2C_SDA_PIN = 0
 LCD_I2C_SCK_PIN = 1
@@ -94,7 +91,48 @@ def wlan_disconnect():
 ########################################################
 def dst_check( unix_format_time, year ):
    global dst_flag
-   if unix_format_time > bst_start_times[year-BST_START_YEAR] and unix_format_time < bst_end_times[year-BST_START_YEAR]:
+   # BST starts last Sunday in March
+   # find last day of March
+   # Time format: year, month, day, hour, minute, second, weekday, day of the year, daylight saving
+   time_tuple = (year, 3, 31, 2, 0, 0, 0, 0, 0)
+   secs = time.mktime(time_tuple)
+   tm = time.gmtime(secs)
+   if DEBUG_DST == True :
+      print("Mar 31st:", tm)
+      print("Mar 31st tm_wday=", tm[6])
+   # adjust date to last Sunday
+   offset = ((tm[6] + 1) % 7) * (24 * 60 * 60)
+   if DEBUG_DST == True :
+      print( "offset=", offset )
+   bst_start_secs = int(secs-offset)
+   if DEBUG_DST == True :
+      print("bst_start_secs=", bst_start_secs)
+      bst_start_gmtime = time.gmtime(bst_start_secs)
+      print(bst_start_gmtime)
+
+   # BST ends last Sunday in October
+   # find last day of October   
+   time_tuple = (year, 10, 31, 2, 0, 0, 0, 0, 0)
+   secs = time.mktime(time_tuple)
+   tm = time.gmtime(secs)
+   if DEBUG_DST == True :
+      print("Oct 31st:", tm)
+      print("Oct 31st tm_wday=", tm[6])
+      
+   # adjust date to last Sunday
+   offset = ((tm[6] + 1) % 7) * (24 * 60 * 60)
+   if DEBUG_DST == True :
+      print( "offset=", offset )
+   bst_end_secs = int(secs-offset)
+   if DEBUG_DST == True :
+      print("bst_end_secs=", bst_end_secs)
+      bst_end_gmtime = time.gmtime(bst_end_secs)
+      print(bst_end_gmtime)
+
+   if DEBUG_DST == True :
+      print("unix_format_time=", unix_format_time)
+
+   if unix_format_time > bst_start_secs and unix_format_time < bst_start_secs:
       dst_flag = True
    else:
       dst_flag = False
@@ -214,7 +252,7 @@ if __name__ == "__main__":
       hour = t[4]
       minute = t[5]
       seconds = t[6]
-      if DEBUG == True:
+      if DEBUG_TIME == True:
          print( "----------------")
          print( hour, minute, seconds, timezone[ dst_flag ] )
          print( daysofweek[dayofweek], dayofmonth, months[month], year )

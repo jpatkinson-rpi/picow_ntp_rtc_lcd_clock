@@ -18,11 +18,13 @@ bst_start_dates = [''] * BST_NUM_YEARS
 bst_end_times = [0] * BST_NUM_YEARS
 bst_end_dates = [''] * BST_NUM_YEARS
 
+
 for year in range( BST_START_YEAR, BST_START_YEAR+BST_NUM_YEARS ):
    # BST starts last Sunday in March
-   datestr = "{:>4d}".format(year) + "/3/31 02:00"
    # find last day of March
-   secs = time.mktime( time.strptime(datestr, "%Y/%m/%d %H:%M") )
+   # year, month, day, hour, minute, second, weekday, day of the year, daylight saving
+   time_tuple = (year, 3, 31, 2, 0, 0, 0, 0, 0)
+   secs = time.mktime(time_tuple)
    tm = time.gmtime(secs)
    #print(tm)
    #print("tm_wday=", tm[6])
@@ -37,9 +39,9 @@ for year in range( BST_START_YEAR, BST_START_YEAR+BST_NUM_YEARS ):
    bst_start_dates[year-BST_START_YEAR] = "{:>2}".format( daysofweek[bst_start_gmtime[6]]) + " {:>2}".format(str(bst_start_gmtime[2])) + " {:>2}".format(months[bst_start_gmtime[1]]) + " {:>4}".format(str(bst_start_gmtime[0]))   
 
    # BST ends last Sunday in October
-   datestr = "{:>4d}".format(year) + "/10/31 02:00"
    # find last day of October   
-   secs = time.mktime( time.strptime(datestr, "%Y/%m/%d %H:%M") )
+   time_tuple = (year, 10, 31, 2, 0, 0, 0, 0, 0)
+   secs = time.mktime(time_tuple)
    tm = time.gmtime(secs)
    #print(tm)
    #print("tm_wday=", tm[6])
